@@ -1,15 +1,50 @@
 - model: shop.product
   pk: 1
   fields:
-    name: Стол
-    price: 2000
+    name: Смартфон
+    price: 20000
 - model: shop.product
   pk: 2
   fields:
-    name: Стул
-    price: 1000
+    name: Ноутбук
+    price: 50000
 - model: shop.product
   pk: 3
   fields:
-    name: Табурет
-    price: 500
+    name: Телевизор
+    price: 40000
+- model: shop.product
+  pk: 4
+  fields:
+    name: Наушники
+    price: 10000
+- model: shop.product
+  pk: 5
+  fields:
+    name: Планшет
+    price: 25000
+- model: shop.product
+  pk: 6
+  fields:
+    name: Умные часы
+    price: 15000
+- model: shop.product
+  pk: 7
+  fields:
+    name: Фотоаппарат
+    price: 30000
+- model: shop.product
+  pk: 8
+  fields:
+    name: Игровая консоль
+    price: 25000
+- model: shop.product
+  pk: 9
+  fields:
+    name: Портативная колонка
+    price: 5000
+- model: shop.product
+  pk: 10
+  fields:
+    name: Электрический чайник
+    price: 3000
