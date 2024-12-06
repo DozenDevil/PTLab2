@@ -131,6 +131,11 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
+# Дополнительные папки для статических файлов
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'shop/static'),  # Ваши файлы стилей и изображений
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 

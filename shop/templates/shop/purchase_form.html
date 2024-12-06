@@ -1,28 +1,49 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Покупка</title>
+    <!-- Подключаем Bootstrap из CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <div>
-        <h3>Покупка</h3>
-        <form method="post">{% csrf_token %}
+
+    <!-- Контейнер для страницы -->
+    <div class="container mt-4">
+        <!-- Заголовок формы -->
+        <h3 class="text-center">Оформление покупки</h3>
+
+        <!-- Форма для оформления покупки -->
+        <form method="post">
+            {% csrf_token %} <!-- Защита от CSRF атак -->
+
+            <!-- Скрытое поле для передачи ID продукта -->
             <input type="hidden" value="{{ view.kwargs.product_id }}" name="product" />
-            <table>
-                <tr>
-                    <td><p>Введите свое имя </p></td>
-                    <td><input type="text" name="person" /> </td>
-                </tr>
-                <tr>
-                    <td><p>Введите адрес доставки:</p></td>
-                    <td>
-                        <input type="text" name="address" />
-                    </td>
-                </tr>
-                <tr><td><input type="submit" value="Отправить" /> </td><td></td></tr>
-            </table>
+
+            <!-- Поле для ввода имени покупателя -->
+            <div class="form-group">
+                <label for="person">Введите свое имя</label>
+                <input type="text" name="person" id="person" class="form-control">
+            </div>
+
+            <!-- Поле для ввода адреса доставки -->
+            <div class="form-group">
+                <label for="address">Введите адрес доставки</label>
+                <input type="text" name="address" id="address" class="form-control">
+            </div>
+
+            <!-- Кнопка отправки формы -->
+            <button type="submit" class="btn btn-primary">Отправить</button>
         </form>
     </div>
+
+    <!-- Подключаем Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>

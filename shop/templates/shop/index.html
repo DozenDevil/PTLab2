@@ -1,26 +1,51 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Товары</title>
+    <!-- Подключаем Bootstrap из CDN для стилизации -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <div>
-        <h3>Список</h3>
-        <table>
-            <tr>
-                <td><p>Наименование</p></td>
-                <td><p>Цена</p></td>
-                <td></td>
-            </tr>
-            {% for p in products %}
+
+    <!-- Контейнер для страницы -->
+    <div class="container mt-4">
+        <!-- Заголовок страницы -->
+        <h3 class="text-center">Список товаров</h3>
+
+        <!-- Таблица с товарами -->
+        <table class="table table-striped">
+            <!-- Заголовки таблицы -->
+            <thead>
                 <tr>
-                    <td><p>{{ p.name }}</p></td>
-                    <td><p>{{ p.price }}</p></td>
-                    <td><p><a href="/buy/{{ p.id }}">Купить</a></p></td>
+                    <th>Наименование</th>
+                    <th>Цена</th>
+                    <th>Действия</th>
                 </tr>
-            {% endfor %}
+            </thead>
+            <tbody>
+                <!-- Перебираем список продуктов и отображаем их -->
+                {% for p in products %}
+                    <tr>
+                        <td>{{ p.name }}</td>
+                        <td>{{ p.price }}</td>
+                        <td>
+                            <!-- Ссылка на страницу покупки для конкретного товара -->
+                            <a href="/buy/{{ p.id }}" class="btn btn-success">Купить</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
+
+    <!-- Подключаем Bootstrap JS для дополнительной функциональности -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>
