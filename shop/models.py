@@ -11,17 +11,17 @@ class Product(models.Model):
     # Оно не позволяет значениям быть отрицательными.
     price = models.PositiveIntegerField()
 
-    # Метод __str__ определяет строковое представление объекта модели.
-    # Например, в админке или при выводе в консоль вместо <Product: Product object (1)>
-    # объект будет отображаться как "Название товара - цена".
-    # Удобно для отладки и админки, но в данном случае метод закомментирован.
-    # def __str__(self):
-    #     return f"{self.name} - {self.price} ₽"
+    quantity = models.PositiveIntegerField(default=0)  # Количество товара в магазине
+
+    def increase_price(self):
+        """Метод для увеличения цены на 15%."""
+        self.price *= 1.15
+        self.save()  # Сохраняем изменения в базе данных
 
 
 # Создаём модель Purchase для представления покупок.
 class Purchase(models.Model):
-    # Поле product — связь с моделью Product (многие ко одному).
+    # Поле product — связь с моделью Product (многие к одному).
     # on_delete=models.CASCADE означает, что при удалении товара все связанные покупки будут тоже удалены.
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
@@ -33,10 +33,3 @@ class Purchase(models.Model):
 
     # Поле date — автоматическое добавление текущей даты и времени при создании записи.
     date = models.DateTimeField(auto_now_add=True)
-
-    # Метод __str__ определяет строковое представление объекта модели.
-    # Например, в админке или при выводе в консоль вместо <Purchase: Purchase object (1)>
-    # объект будет отображаться как "Purchase by имя покупателя on дата".
-    # Удобно для отладки и админки, но в данном случае метод закомментирован.
-    # def __str__(self):
-    #     return f"Purchase by {self.person} on {self.date.strftime('%Y-%m-%d')}"
