@@ -13,11 +13,6 @@ class Product(models.Model):
 
     sold_count = models.PositiveIntegerField(default=0)  # Количество проданных товаров
 
-    def increase_price(self):
-        """Метод для увеличения цены на 15%."""
-        self.price *= 1.15
-        self.save()  # Сохраняем изменения в базе данных
-
 
 # Создаём модель Purchase для представления покупок.
 class Purchase(models.Model):

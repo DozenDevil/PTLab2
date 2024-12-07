@@ -27,14 +27,12 @@ class PurchaseCreate(CreateView):
         self.object = form.save()  # Сохраняем покупку
         product = self.object.product
 
-
-
         # Увеличиваем счетчик проданных товаров
         product.sold_count += 1
 
         # Если продано 10 единиц, увеличиваем цену на 15%
         if product.sold_count % 10 == 0:
-            product.increase_price()
+            product.price = int(product.price * 1.15)
 
         product.save()  # Сохраняем изменения
 
