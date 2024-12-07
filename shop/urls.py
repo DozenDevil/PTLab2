@@ -13,7 +13,7 @@ urlpatterns = [
     # Маршрут 'buy/<int:product_id>/' принимает целочисленный параметр product_id.
     # Он вызывает класс PurchaseCreate из views (используется CBV — Class-Based View).
     # Имя маршрута 'buy' позволяет удобно ссылаться на этот маршрут в шаблонах.
-    path('buy/<int:product_id>/', views.PurchaseCreate.as_view(), name='buy'),
+    path('buy/<int:pk>/', views.PurchaseCreate.as_view(), name='buy'),
 
     # Маршрут для страницы подтверждения
     path('purchase_done/<str:person>/<str:address>/', views.PurchaseDone.as_view(), name='purchase_done'),

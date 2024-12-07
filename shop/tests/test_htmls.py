@@ -5,51 +5,80 @@ from shop.models import Product
 
 class IndexPageHTMLTest(TestCase):
     def setUp(self):
-        # Создаем товары
-        self.product1 = Product.objects.create(name="book", price=740)
-        self.product2 = Product.objects.create(name="pencil", price=50)
+        self.product1 = Product.objects.create(name='Laptop', price=50000, sold_count=3)
+        self.product2 = Product.objects.create(name='Smartphone', price=30000, sold_count=7)
 
     def test_index_page_renders_correctly(self):
-        # Делаем запрос на главную страницу
-        response = self.client.get('/')
+        # Запрос к главной странице
+        response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
 
-        # Проверяем, что товары отображаются на странице
-        self.assertIn("book", response.content.decode('utf-8'))
-        self.assertIn("pencil", response.content.decode('utf-8'))
-        self.assertIn("740", response.content.decode('utf-8'))
-        self.assertIn("50", response.content.decode('utf-8'))
+        # Проверяем, что название товаров, их цена и количество проданных отображаются
+        html_content = response.content.decode('utf-8')
+        self.assertIn(self.product1.name, html_content)
+        self.assertIn(str(self.product1.price), html_content)
+        self.assertIn(str(self.product1.sold_count), html_content)
 
-        # Проверяем, что на странице присутствуют правильные ссылки для покупки
-        self.assertContains(response, f'href="/buy/{self.product1.id}"')
-        self.assertContains(response, f'href="/buy/{self.product2.id}"')
+        self.assertIn(self.product2.name, html_content)
+        self.assertIn(str(self.product2.price), html_content)
+        self.assertIn(str(self.product2.sold_count), html_content)
+
+        # Проверяем, что ссылки "Купить" корректно отображаются
+        self.assertIn(f'/buy/{self.product1.id}', html_content)
+        self.assertIn(f'/buy/{self.product2.id}', html_content)
 
 
-class PurchaseCreateHTMLTest(TestCase):
+class PurchaseFormTest(TestCase):
     def setUp(self):
-        # Создаём товар для покупки
-        self.product = Product.objects.create(name="book", price=740)
+        # Создаём тестовый продукт
+        self.product = Product.objects.create(
+            name='Телевизор', price=50000
+        )
 
-    def test_purchase_create_form_renders_correctly(self):
-        # Проверяем, что страница формы покупки доступна
-        response = self.client.get(f'/buy/{self.product.id}/')
+    def test_purchase_form_renders_correctly(self):
+        # Получаем страницу с формой покупки
+        response = self.client.get(reverse('buy', args=[self.product.pk]))
+
+        # Декодируем ответ, чтобы работать с ним как с текстом
+        html_content = response.content.decode('utf-8')
+
+        # Проверяем, что страница вернулась с успешным статусом
         self.assertEqual(response.status_code, 200)
 
-        # Проверяем, что форма содержит нужные поля
-        self.assertContains(response, 'name="person"')
-        self.assertContains(response, 'name="address"')
+        # Проверяем, что на странице есть текст формы
+        self.assertIn('<form method="post">', html_content)
+
+        # Проверяем, что на странице есть поле ввода для имени покупателя
+        self.assertIn('<input type="text" name="person"', html_content)
+
+        # Проверяем, что на странице есть поле ввода для адреса доставки
+        self.assertIn('<input type="text" name="address"', html_content)
+
+        # Проверяем, что на странице есть кнопка отправки формы
+        self.assertIn('<button type="submit" class="btn btn-primary">Отправить</button>', html_content)
 
 
-class PurchaseDoneHTMLTest(TestCase):
+class PurchaseDoneTest(TestCase):
     def setUp(self):
-        # Создаём товар для покупки
-        self.product = Product.objects.create(name="book", price=740)
+        # Информация о покупателе
+        self.person = 'Иван Иванов'
+        self.address = 'Москва, ул. Ленина, д. 1'
 
     def test_purchase_done_renders_correctly(self):
-        # Проверяем, что страница подтверждения доступна
-        response = self.client.get(f'/purchase_done/?person=Ivanov&address=Svetlaya%20St.')
+        # Отправляем GET-запрос на страницу подтверждения покупки
+        response = self.client.get(reverse('purchase_done', args=[self.person, self.address]))
+
+        # Декодируем ответ, чтобы работать с ним как с текстом
+        html_content = response.content.decode('utf-8')
+
+        # Проверяем, что страница вернулась с успешным статусом
         self.assertEqual(response.status_code, 200)
 
-        # Проверяем, что страница отображает правильное сообщение
-        self.assertContains(response, "Спасибо за покупку, Ivanov!")
-        self.assertContains(response, "Ваш заказ будет отправлен на адрес: Svetlaya St.")
+        # Проверяем, что на странице есть сообщение о подтверждении покупки
+        self.assertIn('Спасибо за покупку!', html_content)
+
+        # Проверяем, что на странице отображается имя покупателя
+        self.assertIn(self.person, html_content)
+
+        # Проверяем, что на странице отображается адрес доставки
+        self.assertIn(self.address, html_content)

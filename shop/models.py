@@ -11,7 +11,7 @@ class Product(models.Model):
     # Оно не позволяет значениям быть отрицательными.
     price = models.PositiveIntegerField()
 
-    quantity = models.PositiveIntegerField(default=0)  # Количество товара в магазине
+    sold_count = models.PositiveIntegerField(default=0)  # Количество проданных товаров
 
     def increase_price(self):
         """Метод для увеличения цены на 15%."""

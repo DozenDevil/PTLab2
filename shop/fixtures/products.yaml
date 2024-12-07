@@ -1,69 +1,50 @@
 - model: shop.product
   pk: 1
   fields:
-    name: Телевизор
-    price: 5000
-    quantity: 50
-
+    name: Смартфон
+    price: 20000
 - model: shop.product
   pk: 2
   fields:
-    name: Микроволновка
-    price: 3000
-    quantity: 30
-
+    name: Ноутбук
+    price: 50000
 - model: shop.product
   pk: 3
   fields:
-    name: Холодильник
-    price: 8000
-    quantity: 20
-
+    name: Телевизор
+    price: 40000
 - model: shop.product
   pk: 4
   fields:
-    name: Ноутбук
-    price: 15000
-    quantity: 40
-
+    name: Наушники
+    price: 10000
 - model: shop.product
   pk: 5
   fields:
-    name: Смартфон
-    price: 12000
-    quantity: 60
-
+    name: Планшет
+    price: 25000
 - model: shop.product
   pk: 6
   fields:
-    name: Планшет
-    price: 10000
-    quantity: 25
-
+    name: Умные часы
+    price: 15000
 - model: shop.product
   pk: 7
   fields:
-    name: Камера
-    price: 7000
-    quantity: 15
-
+    name: Фотоаппарат
+    price: 30000
 - model: shop.product
   pk: 8
   fields:
-    name: Наушники
-    price: 2000
-    quantity: 50
-
+    name: Игровая консоль
+    price: 25000
 - model: shop.product
   pk: 9
   fields:
-    name: Вентилятор
-    price: 1500
-    quantity: 80
-
+    name: Портативная колонка
+    price: 5000
 - model: shop.product
   pk: 10
   fields:
-    name: Очки виртуальной реальности
-    price: 4500
-    quantity: 10
+    name: Электрический чайник
+    price: 3000

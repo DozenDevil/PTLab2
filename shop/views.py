@@ -27,15 +27,15 @@ class PurchaseCreate(CreateView):
         self.object = form.save()  # Сохраняем покупку
         product = self.object.product
 
-        # Уменьшаем количество товара на 1
-        product.quantity -= 1
-        product.save()
+        # Увеличиваем счетчик проданных товаров
+        product.sold_count += 1
 
-        # Если товар был продан 10 раз, увеличиваем его цену на 15%
-        if product.quantity % 10 == 0:
+        # Если продано 10 единиц, увеличиваем цену на 15%
+        if product.sold_count % 10 == 0:
             product.increase_price()
 
-        # После сохранения формы, перенаправляем на страницу подтверждения покупки
+        product.save()  # Сохраняем изменения
+
         return redirect('purchase_done', person=self.object.person, address=self.object.address)
 
 

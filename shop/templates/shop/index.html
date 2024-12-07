@@ -23,26 +23,26 @@
             <tr>
                 <th>Наименование</th>
                 <th>Цена</th>
-                <th>Количество</th>  <!-- Новый столбец для количества -->
+                <th>Продано</th> <!-- Новый столбец -->
                 <th>Действия</th>
             </tr>
         </thead>
         <tbody>
             <!-- Перебираем список продуктов и отображаем их -->
-            {% for p in products %}
-                <tr>
-                    <td>{{ p.name }}</td>
-                    <td>{{ p.price }}</td>
-                    <td>{{ p.quantity }}</td>  <!-- Отображаем количество товара -->
-                    <td>
-                        <!-- Ссылка на страницу покупки для конкретного товара -->
-                        <a href="/buy/{{ p.id }}" class="btn btn-success">Купить</a>
-                    </td>
-                </tr>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.sold_count }}</td> <!-- Отображение количества проданных товаров -->
+                <td>
+                    <a href="/buy/{{ product.id }}" class="btn btn-success">Купить</a>
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+
 
     <!-- Подключаем Bootstrap JS для дополнительной функциональности -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
