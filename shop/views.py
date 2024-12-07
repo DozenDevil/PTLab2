@@ -27,6 +27,8 @@ class PurchaseCreate(CreateView):
         self.object = form.save()  # Сохраняем покупку
         product = self.object.product
 
+
+
         # Увеличиваем счетчик проданных товаров
         product.sold_count += 1
 
@@ -36,6 +38,8 @@ class PurchaseCreate(CreateView):
 
         product.save()  # Сохраняем изменения
 
+        print(f"Redirecting to: purchase_done, person={self.object.person}, address={self.object.address}")
+
         return redirect('purchase_done', person=self.object.person, address=self.object.address)
 
 
@@ -44,6 +48,6 @@ class PurchaseDone(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['person'] = self.kwargs.get('person')
-        context['address'] = self.kwargs.get('address')
+        context['person'] = self.kwargs.get('person', 'Неизвестный пользователь')
+        context['address'] = self.kwargs.get('address', 'Неизвестный адрес')
         return context

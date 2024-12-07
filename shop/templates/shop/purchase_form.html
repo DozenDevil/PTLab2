@@ -21,7 +21,7 @@
             {% csrf_token %} <!-- Защита от CSRF атак -->
 
             <!-- Скрытое поле для передачи ID продукта -->
-            <input type="hidden" value="{{ view.kwargs.product_id }}" name="product" />
+            <input type="hidden" value="{{ view.kwargs.pk }}" name="product" />
 
             <!-- Поле для ввода имени покупателя -->
             <div class="form-group">

@@ -24,6 +24,8 @@ class PurchaseCreateTestCase(TestCase):
             'address': 'Москва, ул. Ленина, д. 1'
         })
 
+        print(f"Redirecting to purchase_done with {self.object.person}, {self.object.address}")
+
         # Проверяем, что редирект происходит на страницу подтверждения покупки
         self.assertRedirects(response, reverse('purchase_done', kwargs={'person': 'Иван Иванов', 'address': 'Москва, ул. Ленина, д. 1'}))
 
