@@ -48,7 +48,7 @@
 <p>Базы данных: PostgreSQL </p>
 
 ### ERD-диаграмма: СЕЙЧАС ОТОБРАЖАЕТСЯ ПРИМЕР!!! (нужный скриншот будет добавлен позже)
-![image](https://github.com/DozenDevil/raw/PTLab2/master/img/erd_diagram.png)
+![image](https://github.com/DozenDevil/PTLab2/blob/ind-task8/img/erd_diagram.png)
 
 ### Выводы:
 Было разработано веб-приложение согласно индивидуальному заданию, протестировано разработанное веб-приложение, проблем выявено не было.
