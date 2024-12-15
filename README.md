@@ -47,8 +47,8 @@
 <p>Фреймворки: Django</p>
 <p>Базы данных: PostgreSQL </p>
 
-### ERD-диаграмма: СЕЙЧАС ОТОБРАЖАЕТСЯ ПРИМЕР!!! (нужный скриншот будет добавлен позже)
-![image](https://github.com/DozenDevil/PTLab2/blob/ind-task8/img/erd_diagram.png)
+### ERD-диаграмма:
+![ERD-диаграмма](https://github.com/DozenDevil/PTLab2/blob/ind-task8/img/erd_diagram.png)
 
 ### Выводы:
 Было разработано веб-приложение согласно индивидуальному заданию, протестировано разработанное веб-приложение, проблем выявено не было.
@@ -84,8 +84,8 @@
 <p>Язык проекта - Python</p>
 Технологии - Django Test Framework
 
-### Выполнение тестов: СЕЙЧАС ОТОБРАЖАЕТСЯ ПРИМЕР!!! (нужный скриншот будет добавлен позже)
-![image](https://github.com/Lucky357231/PTLab2/raw/main/img/photo_2024-11-08_17-11-19.jpg)
+### Выполнение тестов:
+![Test Pass](https://github.com/DozenDevil/PTLab2/blob/ind-task8/img/tests_pass.png)
 
 
 ### Выводы:
