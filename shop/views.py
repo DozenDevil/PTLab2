@@ -32,7 +32,7 @@ class PurchaseCreate(CreateView):
 
         # Если продано 10 единиц, увеличиваем цену на 15%
         if product.sold_count % 10 == 0:
-            product.price = int(product.price * 1.15)
+            product.price = round(product.price * 1.15)
 
         product.save()  # Сохраняем изменения
 

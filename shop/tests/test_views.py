@@ -1,65 +1,92 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
 from shop.models import Product, Purchase
-from datetime import datetime
 
 
-# Тестовый класс для представления PurchaseCreate
-class PurchaseCreateTestCase(TestCase):
+class PurchaseViewTestCase(TestCase):
 
-    # Метод setUp выполняется перед каждым тестом и создаёт необходимые объекты
     def setUp(self):
         # Создаём тестовый продукт
-        self.product = Product.objects.create(name="Телевизор", price=50000)
+        self.product = Product.objects.create(name="Телевизор", price=50000, sold_count=0)
 
-        # Инициализируем клиент для отправки запросов в тестах
-        self.client = Client()
-
-    # Тестируем создание покупки через форму
-    def test_purchase_create_view(self):
-        # Отправляем POST-запрос с данными формы на создание покупки
-        response = self.client.post(reverse('buy', args=[self.product.pk]), {
-            'product': self.product.pk,
+    # Тест редиректа после успешной покупки
+    def test_redirect_after_purchase(self):
+        response = self.client.post(reverse('buy', kwargs={'pk': self.product.pk}), {
             'person': 'Иван Иванов',
-            'address': 'Москва, ул. Ленина, д. 1'
+            'address': 'Москва, ул. Ленина, д. 1',
+            'product': self.product.pk,
+        })
+        self.assertRedirects(
+            response,
+            reverse('purchase_done', kwargs={
+                'person': 'Иван Иванов',
+                'address': 'Москва, ул. Ленина, д. 1'
+            })
+        )
+
+    # Тест увеличения цены после 10-й покупки
+    def test_price_increase_after_tenth_sale(self):
+        for _ in range(9):
+            Purchase.objects.create(
+                product=self.product,
+                person="Покупатель",
+                address="Адрес"
+            )
+            self.product.sold_count += 1
+            self.product.save()
+
+        # Совершаем 10-ю покупку
+        response = self.client.post(reverse('buy', kwargs={'pk': self.product.pk}), {
+            'person': 'Иван Иванов',
+            'address': 'Москва, ул. Ленина, д. 1',
+            'product': self.product.pk,
         })
 
-        print(f"Redirecting to purchase_done with {self.object.person}, {self.object.address}")
+        # Проверяем, что произошёл редирект
+        self.assertRedirects(
+            response,
+            reverse('purchase_done', kwargs={
+                'person': 'Иван Иванов',
+                'address': 'Москва, ул. Ленина, д. 1'
+            })
+        )
 
-        # Проверяем, что редирект происходит на страницу подтверждения покупки
-        self.assertRedirects(response, reverse('purchase_done', kwargs={'person': 'Иван Иванов', 'address': 'Москва, ул. Ленина, д. 1'}))
+        # Обновляем объект продукта и проверяем, что цена увеличилась
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.price, round(50000 * 1.15))
 
-        # Проверяем, что покупка была успешно создана в базе данных
-        self.assertEqual(Purchase.objects.count(), 1)
-        purchase = Purchase.objects.first()
-        self.assertEqual(purchase.product, self.product)
-        self.assertEqual(purchase.person, 'Иван Иванов')
-        self.assertEqual(purchase.address, 'Москва, ул. Ленина, д. 1')
+    # Тест доступности страницы purchase_done
+    def test_purchase_done_page(self):
+        response = self.client.get(reverse('purchase_done', kwargs={
+            'person': 'Иван Иванов',
+            'address': 'Москва, ул. Ленина, д. 1'
+        }))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Иван Иванов")  # Проверяем, что имя покупателя отображается
+        self.assertContains(response, "Москва, ул. Ленина, д. 1")  # Проверяем адрес покупателя
 
-    # Тестируем, что количество проданных товаров увеличивается
-    def test_sold_count_increases(self):
+    # Тест создания покупки и увеличения sold_count
+    def test_sold_count_increase(self):
         initial_sold_count = self.product.sold_count
-        self.client.post(reverse('buy', args=[self.product.pk]), {
-            'product': self.product.pk,
+        self.client.post(reverse('buy', kwargs={'pk': self.product.pk}), {
             'person': 'Иван Иванов',
-            'address': 'Москва, ул. Ленина, д. 1'
+            'address': 'Москва, ул. Ленина, д. 1',
+            'product': self.product.pk,
         })
-        self.product.refresh_from_db()  # Обновляем объект продукта из базы данных
+
+        # Обновляем продукт из базы данных
+        self.product.refresh_from_db()
         self.assertEqual(self.product.sold_count, initial_sold_count + 1)
 
-    # Тестируем, что цена увеличивается после каждых 10 продаж
-    def test_price_increase_after_tenth_sale(self):
-        self.product.sold_count = 9
-        self.product.save()
-        self.client.post(reverse('buy', args=[self.product.pk]), {
-            'product': self.product.pk,
+    # Тест создания объекта Purchase
+    def test_purchase_creation(self):
+        self.client.post(reverse('buy', kwargs={'pk': self.product.pk}), {
             'person': 'Иван Иванов',
-            'address': 'Москва, ул. Ленина, д. 1'
+            'address': 'Москва, ул. Ленина, д. 1',
+            'product': self.product.pk,
         })
-        self.product.refresh_from_db()  # Обновляем объект продукта из базы данных
 
-        # Ожидаемая цена с увеличением на 15%
-        expected_price = int(50000 * 1.15)  # Приводим к целому числу, отбросив дробную часть
-
-        # Проверяем, что цена товара после увеличения равна ожидаемой целой цене
-        self.assertEqual(self.product.price, expected_price)
+        # Проверяем, что объект Purchase создан
+        purchase = Purchase.objects.get(product=self.product)
+        self.assertEqual(purchase.person, 'Иван Иванов')
+        self.assertEqual(purchase.address, 'Москва, ул. Ленина, д. 1')

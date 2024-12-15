@@ -10,13 +10,13 @@ body {
 /* Анимация для фона */
 @keyframes backgroundAnimation {
     0% {
-        background-color: #ff7e5f; /* Начальный цвет */
+        background-color: #ffffff; /* Начальный цвет */
     }
     50% {
-        background-color: #feb47b; /* Промежуточный цвет */
+        background-color: #cae3ff; /* Промежуточный цвет */
     }
     100% {
-        background-color: #ff7e5f; /* Финальный цвет */
+        background-color: #bed8ff; /* Финальный цвет */
     }
 }
 

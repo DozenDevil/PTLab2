@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.urls import reverse
 from shop.models import Product, Purchase
 from datetime import datetime
 
@@ -6,7 +7,6 @@ from datetime import datetime
 # Тестовый класс для модели Product
 class ProductTestCase(TestCase):
 
-    # Метод setUp выполняется перед каждым тестом и создаёт необходимые объекты
     def setUp(self):
         # Создаём два продукта для тестирования
         self.product_1 = Product.objects.create(name="Телевизор", price=50000)
@@ -14,61 +14,66 @@ class ProductTestCase(TestCase):
 
     # Тестируем правильность типов данных для модели Product
     def test_correctness_types(self):
-        # Проверяем, что поле name является строкой
-        self.assertIsInstance(self.product_1.name, str)
-        # Проверяем, что поле price является целым числом
-        self.assertIsInstance(self.product_1.price, int)
+        self.assertIsInstance(self.product_1.name, str)  # Поле name — строка
+        self.assertIsInstance(self.product_1.price, int)  # Поле price — целое число
 
     # Тестируем правильность данных для модели Product
     def test_correctness_data(self):
-        # Проверяем, что цена для товара "Телевизор" равна 50000
-        self.assertEqual(self.product_1.price, 50000)
-        # Проверяем, что цена для товара "Ноутбук" равна 100000
-        self.assertEqual(self.product_2.price, 100000)
-
-    # Тестируем метод увеличения цены на 15%
-    def test_increase_price(self):
-        # Увеличиваем цену первого продукта
-        self.product_1.increase_price()
-        # Проверяем, что цена увеличилась на 15%
-        self.assertEqual(self.product_1.price, 50000 * 1.15)
-
-        # Увеличиваем цену второго продукта
-        self.product_2.increase_price()
-        # Проверяем, что цена второго продукта увеличилась на 15%
-        self.assertEqual(self.product_2.price, 100000 * 1.15)
+        self.assertEqual(self.product_1.price, 50000)  # Цена для "Телевизор" — 50000
+        self.assertEqual(self.product_2.price, 100000)  # Цена для "Ноутбук" — 100000
 
 
 # Тестовый класс для модели Purchase
 class PurchaseTestCase(TestCase):
 
-    # Метод setUp выполняется перед каждым тестом и создаёт необходимые объекты
     def setUp(self):
         # Создаём объект Product для тестирования
         self.product_1 = Product.objects.create(name="Телевизор", price=50000)
         # Создаём покупку для теста
         self.purchase = Purchase.objects.create(
             product=self.product_1,
-            person="Иван Иванов",  # Имя покупателя
-            address="Москва, ул. Ленина, д. 1"  # Адрес покупателя
+            person="Иван Иванов",
+            address="Москва, ул. Ленина, д. 1"
         )
-        # Дата и время для теста
+        # Сохраняем дату и время для сравнения
         self.datetime = self.purchase.date
 
     # Тестируем правильность типов данных для модели Purchase
     def test_correctness_types(self):
-        # Проверяем, что поле person является строкой
-        self.assertIsInstance(self.purchase.person, str)
-        # Проверяем, что поле address является строкой
-        self.assertIsInstance(self.purchase.address, str)
-        # Проверяем, что поле date является объектом datetime
-        self.assertIsInstance(self.purchase.date, datetime)
+        self.assertIsInstance(self.purchase.person, str)  # Поле person — строка
+        self.assertIsInstance(self.purchase.address, str)  # Поле address — строка
+        self.assertIsInstance(self.purchase.date, datetime)  # Поле date — datetime
 
     # Тестируем правильность данных для модели Purchase
     def test_correctness_data(self):
-        # Проверяем, что имя покупателя — "Иван Иванов"
-        self.assertEqual(self.purchase.person, "Иван Иванов")
-        # Проверяем, что адрес покупателя — "Москва, ул. Ленина, д. 1"
-        self.assertEqual(self.purchase.address, "Москва, ул. Ленина, д. 1")
-        # Проверяем, что дата покупки совпадает с созданной датой
-        self.assertEqual(self.purchase.date.replace(microsecond=0), self.datetime.replace(microsecond=0))
+        self.assertEqual(self.purchase.person, "Иван Иванов")  # Имя покупателя
+        self.assertEqual(self.purchase.address, "Москва, ул. Ленина, д. 1")  # Адрес покупателя
+        self.assertEqual(
+            self.purchase.date.replace(microsecond=0),
+            self.datetime.replace(microsecond=0)
+        )  # Дата покупки
+
+    # Тесты для редиректа после покупки
+    def test_redirect_after_purchase(self):
+        response = self.client.post(reverse('buy', kwargs={'pk': self.product_1.pk}), {
+            'person': 'Иван Иванов',
+            'address': 'Москва, ул. Ленина, д. 1',
+            'product': self.product_1.pk,
+        })
+        self.assertRedirects(
+            response,
+            reverse('purchase_done', kwargs={
+                'person': 'Иван Иванов',
+                'address': 'Москва, ул. Ленина, д. 1'
+            })
+        )
+
+    # Тест корректности данных на странице purchase_done
+    def test_purchase_done_page(self):
+        response = self.client.get(reverse('purchase_done', kwargs={
+            'person': 'Иван Иванов',
+            'address': 'Москва, ул. Ленина, д. 1'
+        }))
+        self.assertEqual(response.status_code, 200)  # Статус ответа 200
+        self.assertContains(response, "Иван Иванов")  # Имя покупателя на странице
+        self.assertContains(response, "Москва, ул. Ленина, д. 1")  # Адрес покупателя
